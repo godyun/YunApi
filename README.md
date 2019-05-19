@@ -1,11 +1,8 @@
 > 站在巨人的肩膀上，并不是高的表现，反而使自己变得渺小~只有吸收了巨人的营养，茁壮自己才是真正的高大！ --笔者
 
 
-# ApiAdmin
-[![ApiAdmin](https://img.shields.io/hexpm/l/plug.svg)](http://www.apiadmin.org/)
-[![ApiAdmin](https://img.shields.io/badge/release-v3.0.8-blue.svg)](http://www.apiadmin.org/)
-[![ApiAdmin](https://img.shields.io/badge/build-passing-brightgreen.svg)](http://www.apiadmin.org/)
-[![ApiAdmin](https://img.shields.io/badge/ApiAdmin-v3.0.8-brightgreen.svg)](http://www.apiadmin.org/)
+# YunAPI
+一个基于ApiAdmin二次开发的项目
 
 ## 前端页面
 ApiAdmin3.0是一个前后端完全分离的项目，前端采用Vue构建，如需要可视化配置的请移步：[ApiAdmin-WEB](https://gitee.com/apiadmin/ApiAdmin-WEB)
