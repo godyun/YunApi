@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>{:config('apiAdmin.APP_NAME')} - 在线接口文档</title>
+<meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width">
+<meta name="viewport" media="(device-height: 568px)" content="initial-scale=1.0,user-scalable=no,maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="stylesheet" href="http://{$_SERVER['HTTP_HOST']}/static/css/gongyong.css">
+<script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery/jquery-1.4.min.js"></script>
+
+</head>
+
+<body>
+
+<div class="head">
+<span class="head_lf"><a href="index.html">返回</a></span>
+
+用户注册
+
+<span class="head_rg"><a href="login.html">登录</a></span>
+</div>
+
+<div class="zhuce">
+	<div class="text">
+        <span>appName</span>
+        <input type="text" placeholder="请输入appName" name="regappname" class="input">
+    </div>
+    
+    <div class="text">
+        <span>appId</span>
+        <input type="text" placeholder="请输入appId" name="regappId" class="input">
+    </div>
+    <div class="text">
+        <span>appSecret</span>
+        <input type="text" placeholder="请输入appSecret" name="regappSecret" class="input">
+    </div>
+    <div class="tip"><a href="#"><input type="checkbox" checked="checked">同意注册条款</a></div>
+    <div class="btndl"><input type="submit" id="reg" value="注 册"></div>
+</div>
+
+
+<div style="text-align:center;">
+<p>更多源码：<a href="http://www.mycodes.net/" target="_blank">源码之家</a></p>
+</div>
+
+<script>
+		$("#reg").unbind("click").bind("click", function () {
+			var appName = $("input[name=regappname]").val();
+			var appId = $("input[name=regappId]").val();
+			var appSecret = $("input[name=regappSecret]").val();
+
+			if (appName == "" || appName == null) {
+				alert("appname不能为空！");
+				return false;
+			} else if (appId == "" || appId == null) {
+				alert("appId不能为空！");
+				return false;
+			} else if (appSecret == "" || appSecret == null) {
+				alert("appSecret不能为空！");
+				return false;
+			} else {
+				$.ajax({  // ajax登陆请求
+					url: "http://api.ownsix.com/api/5ce1184031398",
+					type: "GET",
+					data: { "app_id": appId, "app_secret": appSecret, "app_name": appName },
+					async: false,
+					success: function (res) {
+						alert("注册成功");
+
+
+					}
+				});
+			}
+		});
+
+	</script>
+</body>
+</html>
