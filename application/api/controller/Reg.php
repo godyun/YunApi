@@ -2,9 +2,9 @@
 /*
 /**
  * Created by god.
- * User: cnmobi
- * Date: 2019/5/18
- * Time: 16:44
+ * User: god
+ * Date: 2019/5/19
+ * Time: 21:19
  */
 
 namespace app\api\controller;
@@ -18,28 +18,30 @@ class Reg  extends  Base
         $app_id = $this->request->param ( "app_id" );
         $app_secret = $this->request->param ( "app_secret" );
         $app_name = $this->request->param ( "app_name" );
-        
+        $appsecret=$app_secret;
         if ($app_id == '' || $app_secret == '' || $app_name == '') {  
             return $this->buildFailed ( ReturnCode::NOT_EXISTS, "参数有误" );
         }  
         else{
             
-            $row = $count->where('app_id',$app_id)->count();
+            $row = $count->where('app_id',$app_id)->count();//判断是否已注册
             if($row>0){  
                 return $this->buildFailed ( ReturnCode::NOT_EXISTS, "用户已注册！" );
             } else {  
                 $count-> app_id =$app_id;
                 $count-> app_secret =$app_secret;
                 $count-> app_name = $app_name;
-                $count-> app_addTime = time();   
-                $lastInsId = $count->save();
-                $time = $count->where("app_id",$app_id)->value("app_addTime");
-                $time = date("Y-m-d ", $time);
-                if($lastInsId){
-                    return $this->buildSuccess([
-                        'app_id'    => $app_id,
-                        'app_secret'    => $app_secret,
-                        'app_name'    => $app_name,
+                $count-> app_addTime = time();   //对数据进行入库
+
+                if($lastInsId = $count->save()){
+					$time = $count->where("app_id",$app_id)->value("app_addTime");
+					$time = date("Y-m-d ", $time);
+					$appid  = $this->request->param ( "app_id" );
+					$appname = $app_name = $this->request->param ( "app_name" );
+                    return $this->buildSuccess([//接口返回参数
+                        'app_id'    => $appid,
+                        'app_secret'    => $appsecret,
+                        'app_name'    => $appname,
                         'app_addTime'  => $time
                     ]);
                 } else {
