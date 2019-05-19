@@ -9,15 +9,9 @@
 	<!--图标样式-->
 	<link rel="stylesheet" href="http://{$_SERVER['HTTP_HOST']}/static/css/all.min.css">
 	<link rel="stylesheet" href="http://{$_SERVER['HTTP_HOST']}/static/css/style.css">
-	<script type="text/javascript">
-try{
-    if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
-        window.location.href="mlogin.html";
-    }else{
-        window.location.href="login.html";
-    }
-}catch(e){}
-</script>
+
+
+
 </head>
 
 <body oncontextmenu=self.event.returnValue=false>
@@ -40,7 +34,7 @@ try{
 				<h1>登录</h1>
 				<input type="text" name="appId" placeholder="appId">
 				<input type="password" name="appSecret" placeholder="appSecret">
-				<a href="">忘记密码？</a>
+				<a href="http://wpa.qq.com/msgrd?v=3&uin=308542040&site=qq&menu=yes" target="_Blank" >忘记密码？</a>
 				<button class="ui fluid large teal submit button">登录</button>
 			</form>
 		</div>
@@ -151,7 +145,10 @@ try{
 				window.location = "about:blank";
 			}
 		}
+		
+
 	</script>
+
 
 </body>
 
