@@ -3,11 +3,12 @@
 <head>
     <meta charset="utf-8">
     <title>{:config('apiAdmin.APP_NAME')} - 在线接口列表</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.11/semantic.min.css" rel="stylesheet">
+    <link href="http://{$_SERVER['HTTP_HOST']}/static/css/semantic.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.11/components/tab.min.js"></script>
     <link rel="stylesheet" href="__STATIC__/jsonFormater/jsonFormater.css">
     <script type="text/javascript" src="__STATIC__/jsonFormater/jsonFormater.js"></script>
+<>
 </head>
 <body>
 <br />
@@ -71,8 +72,9 @@
                 </div>
                 <div class="ui pointing large blue three item menu">
                     <a class="item active" data-tab="first">请求参数</a>
-                    <a class="item" data-tab="second">返回参数</a>
-                    <a class="item" data-tab="third">返回示例</a>
+                    <a class="item" data-tab="second">请求模拟</a>
+                    <a class="item" data-tab="third">返回参数</a>
+                    <a class="item" data-tab="fourth">返回示例</a>
                 </div>
                 <div class="ui tab segment active" data-tab="first">
                     <h3>公共请求参数</h3>
@@ -126,7 +128,112 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="ui tab segment" data-tab="second">
+
+                 <!-- 请求模拟 -->
+                 <div class="ui tab segment" data-tab="second">
+                        <h3>公共请求模拟参数【请在Header头里面传递】</h3>
+                        <table class="ui orange celled striped table pub">
+                            <thead>
+                            <tr>
+                                <th>参数名字</th>
+                                <th>类型</th>
+                                <th width="80">是否必须</th>
+                                <th width="10%">默认值</th>
+                                <th>请求值</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>version</td>
+                                <td>String</td>
+                                <td><span class="ui green label">必填</span></td>
+                                <td>{:config('apiAdmin.APP_VERSION')}</td>
+                                <td class="ui input focus" style="width:100%;">
+                                    <input name="version" value="{:config('apiAdmin.APP_VERSION')}" placeholder="API版本号"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>access-token</td>
+                                <td>String</td>
+                                <td>{$detail['accessToken']==1?'<span class="ui green label">必填</span>':'<span
+                                        class="ui red label">勿填</span>'}
+                                </td>
+                                <td></td>
+                                <td class="ui input {$detail['accessToken']==1?'focus':'error'}" style="width:100%;">
+                                    <input name="access-token" value="" placeholder="APP认证秘钥" {$detail['accessToken']==1?:'readonly'} />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>user-token</td>
+                                <td>String</td>
+                                <td>{$detail['needLogin']==1?'<span class="ui green label">必填</span>':'<span
+                                        class="ui red label">勿填</span>'}
+                                </td>
+                                <td></td>
+                                <td class="ui input {$detail['needLogin']==1?'focus':'error'}" style="width:100%;">
+                                    <input name="user-token" value="" placeholder="用户userID" {$detail['needLogin']==1?:'readonly'}/>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    <h3>请求模拟参数</h3>
+                    <form onsubmit="return false" method="{$detail['method']==1?'post':'get'}" enctype="multipart/form-data" id="submit_data">
+                        <table class="ui red celled striped table">
+                            <thead>
+                            <tr>
+                                <th>参数名字</th>
+                                <th>类型</th>
+                                <th width="80">是否必须</th>
+                                <th width="10%">默认值</th>
+                                <th>请求值</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {volist name="request" id="vo"}
+                            <tr>
+                                <td>{$vo['fieldName']}</td>
+                                <td>{$dataType[$vo['dataType']]}</td>
+                                <td>{$vo['isMust']==1?'<span class="ui green label">必填</span>':'<span class="ui teal label">可选</span>'}
+                                </td>
+                                <td>
+                                    {$vo['default']}
+                                    {if condition="$dataType[$vo['dataType']] eq 'File'"}
+                                    <img src="__PUBLIC__/static/plugs/uploader/theme/image.png" id="img_show" style="width: 50px;height: 34px;">
+                                    {/if}
+                                </td>
+                                <td class="ui input focus" style="width:100%;">
+                                    {if condition="$dataType[$vo['dataType']] eq 'File'"}
+                                    <!-- 多文件上传 -->
+                                    <!--<input type="file" name="file[]" id="file_upload" multiple="multiple">-->
+                                    <input type="file" name="file" id="file_upload">
+                                    <input type="hidden" name="{$vo.fieldName}" id="file_url">
+                                    {else /}
+                                    <input type="text" name="{$vo.fieldName}" value="{$vo.default}" placeholder="{$vo.info}">
+                                    {/if}
+                                </td>
+                            </tr>
+                            {/volist}
+                            </tbody>
+                        </table>
+                    </form>
+                    <!-- http模拟 -->
+                    <div class="ui labeled input" style="width: 80%;">
+                        <div class="ui label">{$http_type}</div>
+                        <input type="text" value="{$_SERVER['HTTP_HOST']}/api/{$hash}" >
+                        <input type="hidden" value="{$http_type}{$_SERVER['HTTP_HOST']}/api/{$hash}" id="api_url">
+                        <select class="ui compact selection dropdown" name="request_type" style="padding-top: 8px;">
+                            <option {$detail['method']==1?:'selected'} value="GET">GET</option>
+                            <option {$detail['method']==2?:'selected'} value="POST">POST</option>
+                        </select>
+                        <div type="submit" id="submit" class="ui button">发送</div>
+                    </div>
+                    <!-- 模拟返回参数 -->
+                    <div class="ui tab segment active">
+                        <pre id="json_output" style='font-family: Arial;'></pre>
+                    </div>
+                </div>
+                <!-- 返回参数 -->
+                <div class="ui tab segment" data-tab="third">
                     <h3>公共返回参数</h3>
                     <table class="ui olive celled striped table" >
                         <thead>
@@ -166,12 +273,14 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="ui tab segment" data-tab="third">
+                <!-- 返回示例 -->
+                <div class="ui tab segment" data-tab="fourth">
                     <pre id="json" style='font-family: Arial;'></pre>
                 </div>
                 <div class="ui blue message">
                     <strong>温馨提示：</strong> 此接口参数列表根据后台代码自动生成，如有疑问请咨询后端开发
                 </div>
+                
                 <p>&copy; Powered  By <a href="http://www.apiadmin.org/" target="_blank">{:config('apiAdmin.APP_NAME')} {:config('apiAdmin.APP_VERSION')}</a> <p>
             </div>
         </div>
@@ -179,7 +288,9 @@
 </div>
 </body>
 <script>
+    // tab标签切换
     $('.pointing.menu .item').tab();
+    // 请求示例json显示
     $(document).ready(function () {
         var s = function () {
             var options = {
@@ -187,13 +298,91 @@
                 isCollapsible: true,
                 quoteKeys: true,
                 tabSize: 2,
-                imgCollapsed: "__STATIC__/jsonFormater/Collapsed.gif",
-                imgExpanded: "__STATIC__/jsonFormater/Expanded.gif"
+                imgCollapsed: "http://api.ownsix.com/static/jsonFormater/Collapsed.gif",
+                imgExpanded: "http://api.ownsix.com/static/jsonFormater/Expanded.gif"
             };
             window.jf = new JsonFormater(options);
-            jf.doFormat({$detail["returnStr"]});
+            jf.doFormat('{$detail["returnStr"]}');
         }();
     });
     $('.ui .vertical').css('max-height', $('#detail').outerHeight(true));
+
+       // 请求模拟
+       $(function(){
+        //得到文件上传文件的真实缓存地址
+        function getObjectURL(file) {
+            var url = null;
+            if (window.createObjectURL != undefined) { // basic
+                url = window.createObjectURL(file)
+            } else if (window.URL != undefined) { // mozilla(firefox)
+                url = window.URL.createObjectURL(file)
+            } else if (window.webkitURL != undefined) { // webkit or chrome
+                url = window.webkitURL.createObjectURL(file)
+            }
+            return url;
+        }
+        //修改file类型input提交表单的文件真实地址
+        $("#file_upload").change(function () {
+            var objUrl = getObjectURL(this.files[0]);
+            var file = $("#file_upload").val();
+            var filename = file.replace(/.*(\/|\\)/, "");
+            var fileType = ['jpg', 'bmp', 'gif', 'png', 'jpeg'];
+            var fileExt = (/[.]/.exec(filename)) ? /[^.]+$/.exec(filename.toLowerCase()) : '';
+            if (objUrl) {
+                if (($.inArray(fileExt[0], fileType)) !== -1) {
+                    $("#img_show").attr("src", objUrl);
+                } else {
+                    $("#img_show").attr("src", '__PUBLIC__/static/plugs/uploader/theme/image.png');
+                }
+                $("#file_url").val(objUrl);
+            }
+        });
+        //模拟发送测试 并显示返回json
+        $("#submit").on("click",function(){
+            // jquery.form代替ajax提交text+file类型
+            var data = {
+                url: $("#api_url").val() ,
+                type: $("select").val(),
+                headers: $(".pub td input").serializeJson(),
+                dataType: 'json',
+                success: function (res) {
+                    var options = {
+                        dom: '#json_output',
+                        isCollapsible: true,
+                        quoteKeys: true,
+                        tabSize: 2,
+                        imgCollapsed: "http://api.ownsix.com/static/jsonFormater/Collapsed.gif",
+                        imgExpanded: "http://api.ownsix.com/static/jsonFormater/Expanded.gif"
+                    };
+                    window.jf = new JsonFormater(options);
+                    $("#json_output").html(jf.doFormat(res));
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+            };
+            $("#submit_data").ajaxSubmit(data);
+        });
+    });
+    //jquery 表单数据序列化转换为json对象
+    (function ($) {
+        $.fn.serializeJson = function () {
+            var serializeObj = {};
+            var array = this.serializeArray();
+            var str = this.serialize();
+            $(array).each(function () {
+                if (serializeObj[this.name]) {
+                    if ($.isArray(serializeObj[this.name])) {
+                        serializeObj[this.name].push(this.value);
+                    } else {
+                        serializeObj[this.name] = [serializeObj[this.name], this.value];
+                    }
+                } else {
+                    serializeObj[this.name] = this.value;
+                }
+            });
+            return serializeObj;
+        };
+    })(jQuery);
 </script>
 </html>
